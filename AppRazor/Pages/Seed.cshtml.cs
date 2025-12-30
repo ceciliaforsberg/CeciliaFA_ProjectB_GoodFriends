@@ -25,6 +25,9 @@ namespace AppRazor.Pages
         [BindProperty]
         public bool RemoveSeeds { get; set; } = true;
 
+        [TempData]
+        public string? Message { get; set; } = null;
+
         public IActionResult OnGet()
         {
             return Page();
@@ -39,13 +42,17 @@ namespace AppRazor.Pages
                     await _admin_service.RemoveSeedAsync(false);
                 }
                 await _admin_service.SeedAsync(NrOfItemsToSeed);
+                var info = await _admin_service.GuestInfoAsync();
+                var friendsSeeded = info.Item.Db.NrSeededFriends;
+
+                Message = $"Seeding completed successfully! {friendsSeeded} friends added.";
 
                 //return Redirect($"~/ListOfGroups"); Tillfälligt, finns inte just nu.
             }
             return Page();
         }
 
-        public SeedModel(IAdminService admin_service, ILogger<SeedModel> logger)
+        public SeedModel(IAdminService admin_service ,ILogger<SeedModel> logger)
         {
             _admin_service = admin_service;
             _logger = logger;

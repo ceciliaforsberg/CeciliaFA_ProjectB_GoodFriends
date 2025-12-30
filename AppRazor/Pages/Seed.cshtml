@@ -9,6 +9,13 @@
 <div class="container px-4 py-4" id="seed">
     <h2 class="pb-2 border-bottom">Seed friends</h2>
 
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert alert-success">
+            @Model.Message
+        </div>
+    }
+
     <p>
         Current the database contains @Model.NrOfFriends friends. Reseed according to the number of items you want.
         You may optionally remove the old data before seeding.
