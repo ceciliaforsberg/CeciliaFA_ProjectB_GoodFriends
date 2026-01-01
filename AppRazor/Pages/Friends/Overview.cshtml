@@ -1,0 +1,34 @@
+@page
+@model AppRazor.Pages.OverviewModel
+@{
+    ViewData["Title"] = "Overview";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@attribute [IgnoreAntiforgeryToken]
+
+<div class="container px-4 py-4" id="webapi-info">
+    <h2 class="pb-2 border-bottom">Overview:</h2>
+    <p>Below you see an overview of the content presented by the database. </p>
+
+    @if (Model.CountryData != null && Model.CountryData.Any())
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4 py-5">
+            @foreach (var item in Model.CountryData)
+            {
+                <div class="col d-flex align-items-start">
+                    <div>
+                        <h3 class="fw-bold mb-0 fs-4 text-body-emphasis">@item.Key</h3>
+                        <p>Friends: @item.Value.FriendsCount</p>
+                        @if(Model.Mode == OverviewModel.OverviewMode.FriendsAndPets){
+                            <p>Pets: @item.Value.PetsCount</p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p>No country data available.</p>
+    }
+</div>
