@@ -4,6 +4,7 @@ using DbContext.Extensions;
 using DbRepos;
 using Encryption.Extensions;
 using Services.Interfaces;
+using Encryption;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
@@ -12,6 +13,7 @@ builder.Configuration.AddSecrets(builder.Environment);
 
 builder.Services.AddEncryptions(builder.Configuration);
 builder.Services.AddDatabaseConnections(builder.Configuration);
+builder.Services.AddJwtToken(builder.Configuration);
 builder.Services.AddUserBasedDbContext();
 
 builder.Services.AddVersionInfo();
@@ -23,6 +25,8 @@ builder.Services.AddScoped<FriendsDbRepos>();
 builder.Services.AddScoped<LoginDbRepos>();
 builder.Services.AddScoped<PetsDbRepos>();
 builder.Services.AddScoped<QuotesDbRepos>();
+
+builder.Services.AddScoped<JwtEncryptions>();
 
 builder.Services.AddScoped<IAdminService, AdminServiceDb>();
 builder.Services.AddScoped<IFriendsService, FriendsServiceDb>();
@@ -44,9 +48,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
-
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapStaticAssets();
 app.MapRazorPages()
