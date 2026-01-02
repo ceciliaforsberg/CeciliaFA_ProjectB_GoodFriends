@@ -17,10 +17,41 @@
             {
                 <div class="col d-flex align-items-start">
                     <div>
-                        <h3 class="fw-bold mb-0 fs-4 text-body-emphasis">@item.Key</h3>
-                        <p>Friends: @item.Value.FriendsCount</p>
-                        @if(Model.Mode == OverviewModel.OverviewMode.FriendsAndPets){
-                            <p>Pets: @item.Value.PetsCount</p>
+                        @if(Model.Mode == OverviewModel.OverviewMode.FriendsAndPets)
+                        {
+                            <form method="post" asp-page-handler="ExpandCountry">
+                                <input type="hidden" name="ExpandedCountry" value="@item.Key" />
+                                <input type="hidden" name="PreviouslyExpandedCountry" value="@Model.ExpandedCountry" />
+                                <input type="hidden" asp-for="NrOfFriends" />
+                                <input type="hidden" asp-for="Mode" />
+
+                                <button type="submit" class="fw-bold fs-4 text-body-emphasis btn btn-link p-0">
+                                    @item.Key
+                                </button>
+                                <p>Friends: @item.Value.FriendsCount</p>
+                                <p>Pets: @item.Value.PetsCount</p>
+                            </form>
+                        }
+                        else
+                        {
+                            <h3 class="fw-bold mb-0 fs-4 text-body-emphasis">@item.Key</h3>
+                            <p>Friends: @item.Value.FriendsCount</p>
+                        }
+
+                        @if(Model.ExpandedCountry == item.Key && Model.CityData.Any())
+                        {
+                            <ul class="mt-2 ps-0">
+                                @foreach(var city in Model.CityData)
+                                {
+                                    <li class="d-flex justify-content-between align-items-center mb-1 border-bottom pb-1">
+                                        <span class="fw-bold text-truncate" style="max-width: 60%;">@city.Key</span>
+                                        <span class="text-muted small">
+                                            <span class="me-2">Friends: @city.Value.FriendsCount</span>
+                                            <span>Pets: @city.Value.PetsCount</span>
+                                        </span>
+                                    </li>
+                                }
+                            </ul>
                         }
                     </div>
                 </div>
