@@ -81,14 +81,18 @@ public class FriendsDbRepos
             //Adding filter functionality
             .Where(i => (i.Seeded == seeded) &&
                         (i.FirstName.ToLower().Contains(filter) ||
-                            i.LastName.ToLower().Contains(filter))).CountAsync(),
+                            i.LastName.ToLower().Contains(filter) || 
+                            i.AddressDbM.Country.ToLower().Contains(filter) ||
+                            i.AddressDbM.City.ToLower().Contains(filter))).CountAsync(),
 
             PageItems = await query
 
             //Adding filter functionality
             .Where(i => (i.Seeded == seeded) &&
                         (i.FirstName.ToLower().Contains(filter) ||
-                            i.LastName.ToLower().Contains(filter)))
+                            i.LastName.ToLower().Contains(filter) ||
+                            i.AddressDbM.Country.ToLower().Contains(filter) ||
+                            i.AddressDbM.City.ToLower().Contains(filter)))
 
             //Adding paging
             .Skip(pageNumber * pageSize)
