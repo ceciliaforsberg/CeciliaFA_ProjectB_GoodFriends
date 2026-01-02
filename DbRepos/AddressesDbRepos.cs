@@ -106,6 +106,31 @@ public class AddressesDbRepos
         return ret;
     }
 
+    public async Task<List<string>> ReadAllCountriesAsync(bool seeded)
+    {
+        return await _dbContext.Addresses
+            .AsNoTracking()
+            .Where(a => a.Seeded == seeded &&
+                        a.Country != null &&
+                        a.Country != "")
+            .Select(a => a.Country)
+            .Distinct()
+            .OrderBy(c => c)
+            .ToListAsync();
+    }
+    public async Task<List<string>> ReadAllCitiesAsync(bool seeded, string country)
+    {
+        return await _dbContext.Addresses
+            .AsNoTracking()
+            .Where(a => a.Seeded == seeded &&
+                        a.Country == country &&
+                        !string.IsNullOrWhiteSpace(a.City))
+            .Select(a => a.City)
+            .Distinct()
+            .OrderBy(c => c)
+            .ToListAsync();
+    }
+
     public async Task<ResponseItemDto<IAddress>> DeleteAddressAsync(Guid id)
     {
         var query1 = _dbContext.Addresses

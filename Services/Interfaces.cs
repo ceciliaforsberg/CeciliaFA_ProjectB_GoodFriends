@@ -22,6 +22,8 @@ public interface IFriendsService
 public interface IAddressesService
 {
     public Task<ResponsePageDto<IAddress>> ReadAddressesAsync(bool seeded, bool flat, string filter, int pageNumber, int pageSize);
+    public Task<List<string>> ReadAllCountriesAsync(bool seeded);
+    public  Task<List<string>> ReadAllCitiesAsync(bool seeded, string country);
     public Task<ResponseItemDto<IAddress>> ReadAddressAsync(Guid id, bool flat);
     public Task<ResponseItemDto<IAddress>> DeleteAddressAsync(Guid id);
     public Task<ResponseItemDto<IAddress>> UpdateAddressAsync(AddressCuDto item);
