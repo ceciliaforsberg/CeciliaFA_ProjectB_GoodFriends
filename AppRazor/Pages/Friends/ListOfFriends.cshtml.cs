@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 using Models.Interfaces;
-using Services;
 using Services.Interfaces;
 
 namespace AppRazor.Pages
@@ -61,7 +60,6 @@ namespace AppRazor.Pages
             NrOfFriends = resp.DbItemsCount;
 
             UpdatePagination(resp.DbItemsCount);
-            Console.WriteLine($"SearchFilter: '{SearchFilter}'");
 
             return Page();
         }
