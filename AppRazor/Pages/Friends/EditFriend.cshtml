@@ -13,15 +13,11 @@
             <button class="btn btn-primary-outline" type="submit" asp-page-handler="Save">
                 <svg class="bi text-body-secondary flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#save" /></svg>
             </button>
-            <button class="btn btn-primary-outline" type="submit" asp-page-handler="Undo">
-                <svg class="bi text-body-secondary flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#undo" /></svg>
-            </button>
         </h2>
 
         <div class="row row-cols-1 row-cols-lg-4 align-items-stretch g-4 py-5">
             <div class="col-md-7 col-lg-10">
 
-                <!-- Server side validation errors, rough but just in case client side validation is not working or tampered with -->
                 @if (Model.HasValidationErrors)
                 {
                     <div class="row g-3">
@@ -36,7 +32,6 @@
 
                 <div class="row g-3">
 
-                    <!-- Hidden fields used to bind input model -->
                     <input asp-for="FriendInput.FriendId" type="hidden" />
                     <input asp-for="FriendInput.StatusIM" type="hidden" />
 
@@ -109,7 +104,6 @@
                 <div class="row g-1">
                     <h3 class="pb-2">Quotes</h3>
 
-                    <!-- This is the parameter that will be sent to Post when item is clicked -->
                     <input type="hidden" name="artistId" data-seido-selected-item-id-target />
 
                     <div class="row mb-2 text-center">
@@ -137,7 +131,6 @@
                 </div>
 
                 <div class="row g-1">
-                    <!-- This is the parameter to a Post-->
                     <input type="hidden" name="petId" data-seido-selected-item-id-target />
                     <h3 class="pb-2">Pets</h3>
 
@@ -172,6 +165,5 @@
 
 @section script
 {
-    <!-- -->
     <partial name="_ValidationScriptsPartial" />
 }
