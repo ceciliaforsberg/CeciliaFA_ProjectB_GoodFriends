@@ -1,0 +1,109 @@
+@model ListOfFriendsAndPetsViewModel
+@{
+    ViewData["Title"] = "List friends and pets by city";
+}
+
+<div class="container px-4 py-4" id="list-of-groups">
+    <h2 class="pb-2 border-bottom">List Friends and Pets by City</h2>
+    <p>
+        @(Model.HasSelectedCountry
+        ? $"The database contains {Model.NrOfFriends} friends and {Model.NrOfPets} pets living in {Model.SelectedCountry}."
+        : $"The database contains {Model.NrOfFriends} friends and {Model.NrOfPets} pets with unknown country")
+    </p>
+
+    <!-- Country selection -->
+    <form asp-action="ListOfFriendsAndPets" asp-controller="Friends" method="get" class="mb-4">
+        <label class="form-label">Select country</label>
+
+        <select asp-for="SelectedCountry"
+                asp-items="@(new SelectList(Model.AvailableCountries))"
+                class="form-select"
+                onchange="this.form.submit()">
+            <option value="">-- Select country --</option>
+        </select>
+
+        <input type="hidden" name="search" value="@Model.SearchFilter" />
+    </form>
+
+    @if (Model.HasSelectedCountry)
+    {
+        <form method="post" class="needs-validation" method="post" novalidate>
+            <input type="hidden" name="SelectedCountry" value="@Model.SelectedCountry" />
+            <label class="form-check-label"><input asp-for="UseSeeds" class="form-check-input" type="checkbox" />Use seeded data</label>
+
+            <div class="row row-cols-1 row-cols-lg-4 g-4 py-5">
+                <div class="col-md-7 col-lg-10">
+
+                    <!-- Search form -->
+                    <div class="row mb-2">
+                        <div class="col-md-6">
+                            <input asp-for="SearchFilter" class="form-control" type="search" placeholder="Search by country" />
+                        </div>
+                        <div class="col-md-2">
+                            <button asp-controller="Friends" asp-action="SearchCity" class="btn btn-outline-success" type="submit">Search</button>
+                        </div>
+                    </div>
+
+                    <!-- Friends list -->
+                    <div class="row mb-2 text-center">
+                        <div class="col-md-6 themed-grid-head-col">Name</div>
+                        <div class="col-md-2 themed-grid-head-col">Country</div>
+                        <div class="col-md-2 themed-grid-head-col">City</div>
+                        <div class="col-md-2 themed-grid-head-col"></div>
+                    </div>
+
+                    @if (Model.Friends != null && Model.Friends.Any())
+                    {
+                        @foreach (var item in Model.Friends)
+                        {
+                            <div class="row mb-2 text-center">
+                                <div class="col-md-6 themed-grid-col">
+                                    <a asp-action="FriendDetails" asp-controller="Friends" asp-route-id="@item.FriendId">
+                                        @item.FirstName @item.LastName
+                                    </a>
+                                    <br />
+                                    @if (item.Pets != null && item.Pets.Any())
+                                    {
+                                        <span class="text-muted small">
+                                            Pets: @string.Join(", ", item.Pets.Select(p => p.Name))
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">No pets</span>
+                                    }
+                                </div>
+
+                                <div class="col-md-2 themed-grid-col">@((item.Address?.Country) ?? "Unknown")</div>
+                                <div class="col-md-2 themed-grid-col">@(item.Address?.City ?? "Unknown")</div>
+                                <div class="col-md-2 themed-grid-col">
+                                    <a asp-action="EditFriend" asp-controller="Friends" asp-route-id="@item.FriendId" class="btn btn-secondary btn-sm m-1">Edit</a>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Pagination -->
+                        <nav aria-label="Standard pagination example">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="ListOfFriendsAndPets" asp-controller="Friends" asp-route-SelectedCountry="@Model.SelectedCountry" asp-route-search="@Model.SearchFilter" asp-route-pagenr="@Model.PrevPageNr">&laquo;</a>
+                                </li>
+
+                                @for (int i = 0; i < Model.NrVisiblePages; i++)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="ListOfFriendsAndPets" asp-controller="Friends" asp-route-SelectedCountry="@Model.SelectedCountry" asp-route-search="@Model.SearchFilter" asp-route-pagenr="@i">@(@i + 1)</a>
+                                    </li>
+                                }
+
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="ListOfFriendsAndPets" asp-controller="Friends" asp-route-SelectedCountry="@Model.SelectedCountry" asp-route-search="@Model.SearchFilter" asp-route-pagenr="@Model.NextPageNr">&raquo;</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    }
+            </div>
+        </div>
+    </form>
+    }
+</div>
