@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
+using AppRazor.SeidoHelpers;
 using Models.Interfaces;
 using Services.Interfaces;
 using Models.DTO;
@@ -21,6 +22,7 @@ namespace AppRazor.Pages
         public FriendIM FriendInput { get; set; }
         public bool HasValidationErrors { get; set; }
         public IEnumerable<string> ValidationErrorMsgs { get; set; }
+        public ModelValidationResult ValidationResult { get; set; } = new ModelValidationResult(false, null, null);
 
         public async Task<IActionResult> OnGet()
         {
@@ -34,12 +36,15 @@ namespace AppRazor.Pages
             return Page();
         }
 
-        public async Task<IActionResult> OnPostSave(Guid friendId)
+        public async Task<IActionResult> OnPostSave()
         {
-            if (!ModelState.IsValid)
+            string[] keys = { "FriendInput.FirstName",
+                              "FriendInput.LastName",
+                              "FriendInput.Birthday"};
+            
+            if (!ModelState.IsValidPartially(out ModelValidationResult validationResult, keys))
             {
-                HasValidationErrors = true;
-                ValidationErrorMsgs = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                ValidationResult = validationResult;
                 return Page();
             }
 
@@ -54,18 +59,36 @@ namespace AppRazor.Pages
             var friend = await SaveAddress();
             friend = FriendInput.UpdateModel(friend);
             await _service.UpdateFriendAsync(new FriendCuDto(friend));
-            return Page();
+
+            return Redirect($"~/Friends/FriendDetails?id={FriendInput.FriendId}");
 
         }
 
-        public IActionResult OnPostSaveAddress()
+        public async Task<IActionResult> OnPostDelete(Guid itemId, string type)
         {
-            if (!ModelState.IsValid)
+
+            var friend = await _service.ReadFriendAsync(FriendInput.FriendId, false);
+            FriendInput = new FriendIM(friend.Item);
+
+            if (type == "Pet")
             {
-                HasValidationErrors = true;
-                ValidationErrorMsgs = ModelState
-                    .SelectMany(kvp => kvp.Value.Errors
-                    .Select(e => !string.IsNullOrEmpty(e.ErrorMessage) ? e.ErrorMessage : e.Exception?.Message));
+                FriendInput.Pets.First(p => p.PetId == itemId).StatusIM = StatusIM.Deleted;
+                return Page();
+            }
+
+            FriendInput.Quotes.First(q => q.QuoteId == itemId).StatusIM = StatusIM.Deleted;
+            return Page();
+        }
+
+        public IActionResult OnPostSaveAddress() //For the address save button
+        {
+            string[] keys = { "FriendInput.Address.StreetAddress",
+                              "FriendInput.Address.City",
+                              "FriendInput.Address.Country"};
+
+            if (!ModelState.IsValidPartially(out ModelValidationResult validationResult, keys))
+            {
+                ValidationResult = validationResult;
                 return Page();
             }
 
@@ -75,11 +98,12 @@ namespace AppRazor.Pages
         private async Task<IFriend> SaveAddress()
         {
             var originalFriend = (await _service.ReadFriendAsync(FriendInput.FriendId, false)).Item;
-            var originalAddress = new AddressIm(originalFriend.Address);
-
-            if(originalAddress.IsSameAs(FriendInput.Address)) return originalFriend;
-
-            //Need to see changes to not create new address every time. 
+            if(originalFriend.Address != null) //If friend has no address
+            {
+                //Need to see changes to not create new address every time.
+                var originalAddress = new AddressIm(originalFriend.Address);
+                if(originalAddress.IsSameAs(FriendInput.Address)) return originalFriend;
+            } 
 
             var cuDto = FriendInput.Address.CreateCUdto();
             cuDto.FriendsId = new List<Guid> { FriendInput.FriendId };
@@ -209,7 +233,8 @@ namespace AppRazor.Pages
 
                 return string.Equals(StreetAddress?.Trim(), other.StreetAddress?.Trim(), StringComparison.OrdinalIgnoreCase)
                     && string.Equals(City?.Trim(), other.City?.Trim(), StringComparison.OrdinalIgnoreCase)
-                    && string.Equals(Country?.Trim(), other.Country?.Trim(), StringComparison.OrdinalIgnoreCase);
+                    && string.Equals(Country?.Trim(), other.Country?.Trim(), StringComparison.OrdinalIgnoreCase)
+                    && ZipCode == other.ZipCode;
             }
         }
         public class QuotesIm //Input model for validation, to update address
