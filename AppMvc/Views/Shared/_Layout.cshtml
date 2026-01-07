@@ -9,12 +9,12 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AppMvc.styles.css" asp-append-version="true" />
 
-    <link href="~/css/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/bootstrap/navbars-offcanvas.css" rel="stylesheet">
-    <link href="~/css/bootstrap/features.css" rel="stylesheet">
-    <link href="~/css/bootstrap/grid.css" rel="stylesheet">
-    <link href="~/css/bootstrap/sign-in.css" rel="stylesheet">
-    <link href="~/css/bootstrap/modals.css" rel="stylesheet">
+    <link href="~/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/navbars-offcanvas.css" rel="stylesheet">
+    <link href="~/css/features.css" rel="stylesheet">
+    <link href="~/css/grid.css" rel="stylesheet">
+    <link href="~/css/sign-in.css" rel="stylesheet">
+    <link href="~/css/modals.css" rel="stylesheet">
 </head>
 <body>
     <svg xmlns="http://www.w3.org/2000/svg">
@@ -73,11 +73,14 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - AppMvc - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+    <div class="container">
+        <footer class="row row-cols-1 row-cols-sm-2 row-cols-md-5 py-5 my-5 border-top">
+            <div class="col mb-4">
+                &copy; 2025 - AppRazor
+            </div>
+        </footer>
+    </div>
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>    
