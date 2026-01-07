@@ -115,7 +115,7 @@ public class FriendsController : Controller
         var friend = await _service.ReadFriendAsync(vm.FriendInput.FriendId, false);
         vm.FriendInput = new EditFriendViewModel.FriendIM(friend.Item);
 
-        if (type == "Pet")
+        if (type == "Pet") //Check for type, i choose this in the cshtml file 
         {
             vm.FriendInput.Pets.First(p => p.PetId == itemId).StatusIM = EditFriendViewModel.StatusIM.Deleted;
             return View("EditFriend", vm);
@@ -144,11 +144,12 @@ public class FriendsController : Controller
             if(originalAddress.IsSameAs(vm.FriendInput.Address)) return originalFriend;
         } 
 
+        //Create new address
         var cuDto = vm.FriendInput.Address.CreateCUdto();
         cuDto.FriendsId = new List<Guid> { vm.FriendInput.FriendId };
         await _addressService.CreateAddressAsync(cuDto);
 
-        var friend = await _service.ReadFriendAsync(vm.FriendInput.FriendId, false); //For test
+        var friend = await _service.ReadFriendAsync(vm.FriendInput.FriendId, false); 
         return friend.Item;
     }
 
@@ -157,7 +158,7 @@ public class FriendsController : Controller
         //Load all avalible countries
         vm.AvailableCountries = await _addressService.ReadAllCountriesAsync(vm.UseSeeds);
 
-        //Get total items, this is to not miss any items located on different pages in service in next step
+        //Get total items, this is to not miss any items for upcomming filtering
         var totalResp = await _service.ReadFriendsAsync(vm.UseSeeds, false, null, 0, 1);
         int totalItems = totalResp.DbItemsCount;
 
@@ -181,7 +182,7 @@ public class FriendsController : Controller
         UpdatePagination(vm, vm.NrOfFriends);
     }
 
-    private bool IsSameAddress(EditFriendViewModel.AddressIM input, IAddress model)
+    private bool IsSameAddress(EditFriendViewModel.AddressIM input, IAddress model) //Help method to compare address content without GUID
     {
         if (input == null || model == null) return false;
         return input.StreetAddress == model.StreetAddress &&

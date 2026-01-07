@@ -56,6 +56,7 @@ namespace AppRazor.Pages
             var deletedQuotes = FriendInput.Quotes.FindAll(p => (p.StatusIM == StatusIM.Deleted));
             foreach(var quote in deletedQuotes) await _quotesService.DeleteQuoteAsync(quote.QuoteId);
 
+            //Update friend and save to database
             var friend = await SaveAddress();
             friend = FriendInput.UpdateModel(friend);
             await _service.UpdateFriendAsync(new FriendCuDto(friend));
@@ -70,7 +71,7 @@ namespace AppRazor.Pages
             var friend = await _service.ReadFriendAsync(FriendInput.FriendId, false);
             FriendInput = new FriendIM(friend.Item);
 
-            if (type == "Pet")
+            if (type == "Pet") //To use same method for pets and quotes
             {
                 FriendInput.Pets.First(p => p.PetId == itemId).StatusIM = StatusIM.Deleted;
                 return Page();
@@ -109,7 +110,7 @@ namespace AppRazor.Pages
             cuDto.FriendsId = new List<Guid> { FriendInput.FriendId };
             await _addressService.CreateAddressAsync(cuDto);
 
-            var friend = await _service.ReadFriendAsync(FriendInput.FriendId, false); //For test
+            var friend = await _service.ReadFriendAsync(FriendInput.FriendId, false); 
             return friend.Item;
         }
 
@@ -129,7 +130,7 @@ namespace AppRazor.Pages
             public StatusIM StatusIM { get; set; }
             public Guid FriendId { get; set; }
 
-            [Required(ErrorMessage = "First name is required")]
+            [Required(ErrorMessage = "First name is required")] //Validation with error message
             [StringLength(50, ErrorMessage = "First name too long")]
             public string FirstName { get; set; }
 
@@ -140,7 +141,6 @@ namespace AppRazor.Pages
             public AddressIm Address { get; set; } = new AddressIm();
             public List<QuotesIm> Quotes { get; set; } = new List<QuotesIm>();
             public List<PetIm> Pets { get; set; } = new List<PetIm>();
-            //public AddressIm NewAddress { get; set; } = new AddressIm();
 
             public FriendIM() { }
 

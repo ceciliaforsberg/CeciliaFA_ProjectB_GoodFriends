@@ -16,16 +16,16 @@ namespace AppMvc.Models
         public ModelValidationResult ValidationResult { get; set; } = new ModelValidationResult(false, null, null);
         public enum StatusIM { Unknown, Unchanged, Inserted, Modified, Deleted }
 
-        public class FriendIM
+        public class FriendIM //Input model for validation
         {
             public Guid FriendId { get; set; }
             public StatusIM StatusIM { get; set; }
 
-            [Required(ErrorMessage = "First name is required")]
-            [StringLength(50)]
+            [Required(ErrorMessage = "First name is required")] //Validation message to show user
+            [StringLength(50, ErrorMessage = "Name is too long")] //Validation for string length
             public string FirstName { get; set; }
 
-            [Required(ErrorMessage = "Last name is required")]
+            [Required(ErrorMessage = "Last name is required")] //Validation message to show user
             public string LastName { get; set; }
 
             public DateTime? Birthday { get; set; }
@@ -62,7 +62,7 @@ namespace AppMvc.Models
             };
         }
 
-        public class AddressIM
+        public class AddressIM //Input model for validation
         {
             public Guid AddressId { get; set; }
             public StatusIM StatusIM { get; set; }
@@ -127,7 +127,7 @@ namespace AppMvc.Models
             }
         }
 
-        public class QuoteIM
+        public class QuoteIM //Input model for validation
         {
             public Guid QuoteId { get; set; }
             public StatusIM StatusIM { get; set; }
@@ -168,7 +168,7 @@ namespace AppMvc.Models
             };
         }
 
-        public class PetIM
+        public class PetIM //Input model for validation
         {
             public Guid PetId { get; set; }
             public StatusIM StatusIM { get; set; }
