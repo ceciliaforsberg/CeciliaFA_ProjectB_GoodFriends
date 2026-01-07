@@ -1,0 +1,75 @@
+@model ListOfFriendsViewModel
+@{
+    ViewData["Title"] = "List of friends";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<div class="container px-4 py-4" id="list-of-groups">
+    <h2 class="pb-2 border-bottom">List of Friends by country</h2>
+
+    <p>The database contains @Model.NrOfFriends friends living in chosen country.</p>
+
+    <form method="post" class="needs-validation" method="post" novalidate>
+        <label class="form-check-label">
+            <input asp-for="UseSeeds" class="form-check-input" type="checkbox" />
+            Use seeded data
+        </label>
+
+        <div class="row row-cols-1 row-cols-lg-4 g-4 py-5">
+            <div class="col-md-7 col-lg-10">
+
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <input asp-for="SearchFilter" class="form-control" type="search" placeholder="Search by country" />
+                    </div>
+                    <div class="col-md-2">
+                        <button asp-controller="Friends" asp-action="Search" class="btn btn-outline-success" type="submit">Search</button>
+                    </div>
+                </div>
+
+                <div class="row mb-2 text-center">
+                    <div class="col-md-6 themed-grid-head-col">Name</div>
+                    <div class="col-md-4 themed-grid-head-col">Country</div>
+                    <div class="col-md-2 themed-grid-head-col"></div>
+                </div>
+
+                @if (Model.Friends.Any())
+                {
+                    foreach (var item in Model.Friends)
+                    {
+                        <div class="row mb-1 text-center">
+                            <div class="col-md-6 themed-grid-col">
+                                <a asp-controller="Friends" asp-action="FriendDetails" asp-route-id="@item.FriendId"> @item.FirstName @item.LastName</a>
+                            </div>
+                            <div class="col-md-4 themed-grid-col">
+                                @(item.Address?.Country ?? "Unknown")
+                            </div>
+                            <div class="col-md-2 themed-grid-col">
+                                <a asp-controller="Friends" asp-action="EditFriend" asp-route-id="@item.FriendId" class="btn btn-secondary btn-sm">Edit</a>
+                            </div>
+                        </div>
+                    }
+
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item">
+                                <a class="page-link" asp-action="ListOfFriends" asp-route-pagenr="@Model.PrevPageNr" asp-route-search="@Model.SearchFilter">«</a>
+                            </li>
+
+                            @for (int i = 0; i < Model.NrVisiblePages; i++)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="ListOfFriends" asp-route-pagenr="@i" asp-route-search="@Model.SearchFilter"> @(i + 1)</a>
+                                </li>
+                            }
+
+                            <li class="page-item">
+                                <a class="page-link" asp-action="ListOfFriends" asp-route-pagenr="@Model.NextPageNr" asp-route-search="@Model.SearchFilter">»</a>
+                            </li>
+                        </ul>
+                    </nav>
+                }
+            </div>
+        </div>
+    </form>
+</div>
