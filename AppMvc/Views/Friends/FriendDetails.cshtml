@@ -1,0 +1,66 @@
+@model FriendDetailsViewModel
+@{
+    ViewData["Title"] = "Friend Details";
+}
+
+<div class="container px-4 py-4" id="view-group">
+    <h2 class="pb-2 border-bottom">
+        View details of a friend
+        <a href="@Url.Action("EditFriend", "Friends", new { id = Model.Friend.FriendId })">
+            <svg class="bi text-body-secondary flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#edit" /></svg>
+        </a>
+    </h2>
+
+    <form class="needs-validation" novalidate>
+        <div class="row row-cols-1 row-cols-lg-4 align-items-stretch g-4 py-5">
+            <div class="col-md-7 col-lg-10">
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <label for="friendName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="friendName" value="@($"{Model.Friend.FirstName} {Model.Friend.LastName}")" readonly>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="birthday" class="form-label">Birthday</label>
+                        <input type="text" class="form-control" id="birthday" 
+                               value="@(Model.Friend.Birthday.HasValue ? Model.Friend.Birthday.Value.ToString("yyyy-MM-dd") : "Unknown")" readonly>
+                    </div>
+
+                    <div class="col-sm-6"></div>
+
+                    <div class="col-sm-6">
+                        <label for="address" class="form-label">Address</label>
+                        <input type="text" class="form-control" id="address" 
+                               value="@((Model.Friend.Address?.StreetAddress) ?? "Unknown")" readonly>
+                    </div>
+                </div>
+
+                <h3 class="pb-2 mt-4">Quotes</h3>
+                @if (Model.Friend.Quotes != null && Model.Friend.Quotes.Any())
+                {
+                    @foreach (var item in Model.Friend.Quotes)
+                    {
+                        <div class="row mb-2 text-center">
+                            <div class="col-md-12 themed-grid-col">
+                                @item.QuoteText
+                                <div class="col-md-16 text-end">@item.Author</div>
+                            </div>
+                        </div>
+                    }
+                }
+
+                <h3 class="pb-2 mt-4">Pets</h3>
+                @if (Model.Friend.Pets != null && Model.Friend.Pets.Any())
+                {
+                    @foreach (var item in Model.Friend.Pets)
+                    {
+                        <div class="row mb-2 text-center">
+                            <div class="col-md-10 themed-grid-col">@item.Name</div>
+                            <div class="col-md-2 themed-grid-col">@item.Kind</div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </form>
+</div>
