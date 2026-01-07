@@ -1,0 +1,34 @@
+@model SeedViewModel
+@{
+    ViewData["Title"] = "Seed";
+}
+
+<div class="container px-4 py-4" id="seed">
+    <h2 class="pb-2 border-bottom">Seed friends</h2>
+
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert alert-success">
+            @Model.Message
+        </div>
+    }
+
+    <p>
+        Current database contains @Model.NrOfFriends friends.
+    </p>
+
+    <form method="post">
+        <label>Number of items</label>
+        <input asp-for="NrOfItemsToSeed" class="form-control" />
+        <span asp-validation-for="NrOfItemsToSeed"></span>
+
+        <label>Clear before seeding</label>
+        <input asp-for="RemoveSeeds" type="checkbox" />
+
+        <button type="submit" class="btn btn-primary mt-3">Seed</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
