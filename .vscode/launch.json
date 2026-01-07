@@ -3,6 +3,27 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "AppMvc",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/AppMvc/bin/Debug/net9.0/AppMvc.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/AppMvc",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "https://localhost:5201;http://localhost:5200"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/AppMvc/Views"
+            }
+        },
+        {
             "name": "AppRazor",
             "type": "coreclr",
             "request": "launch",
